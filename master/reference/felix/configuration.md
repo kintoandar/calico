@@ -37,6 +37,7 @@ The full list of parameters which can be set is as follows.
 | FailsafeOutboundHostPorts               | FELIX_FAILSAFEOUTBOUNDHOSTPORTS         | tcp:2379, tcp:2380, tcp:4001, tcp:7001, udp:53, udp:67  | Comma-delimited list of UDP/TCP ports that Felix will allow outgoing traffic from host endpoints to irrespective of the security policy. This is useful to avoid accidently cutting off a host with incorrect configuration.  Each port should be specified as `tcp:<port-number>` or `udp:<port-number>`.  For back-compatibility, if the protocol is not specified, it defaults to "tcp".  To disable all outbound host ports, use the value "none".  The default value opens etcd's standard ports to ensure that Felix does not get cut off from etcd as well as allowing DHCP and DNS.  |
 | ReportingIntervalSecs                   | FELIX_REPORTINGINTERVALSECS             | 30                                   | Interval at which Felix reports its status into the datastore or 0 to disable.  Must be non-zero in OpenStack deployments.  |
 | ReportingTTLSecs                        | FELIX_REPORTINGTTLSECS                  | 90                                   | Time-to-live setting for process-wide status reports. |
+| IpInIpMtu                               | FELIX_IPINIPMTU                         | 1440                                 | The MTU to set on the tunnel device. See [Configuring MTU]({{site.baseurl}}/{{page.version}}/usage/configuration/mtu) |
 
 #### etcdv2 datastore configuration
 
@@ -61,6 +62,7 @@ The full list of parameters which can be set is as follows.
 | Setting                                 | Environment variable                    | Default                              | Meaning                                 |
 |-----------------------------------------|-----------------------------------------|--------------------------------------|-----------------------------------------|
 | DefaultEndpointToHostAction             | FELIX_DEFAULTENDPOINTTOHOSTACTION       | DROP                                 | This parameter controls what happens to traffic that goes from a workload endpoint to the host itself (after the traffic hits the endpoint egress policy).  By default Calico blocks traffic from workload endpoints to the host itself with an iptables "DROP" action. If you want to allow some or all traffic from endpoint to host, set this parameter to "RETURN" or "ACCEPT".  Use "RETURN" if you have your own rules in the iptables "INPUT" chain; Calico will insert its rules at the top of that chain, then "RETURN" packets to the "INPUT" chain once it has completed processing workload endpoint egress policy.  Use "ACCEPT" to unconditionally accept packets from workloads after processing workload endpoint egress policy.  |
+| IptablesAllowAction             | FELIX_IPTABLESALLOWACTION       | ACCEPT                                 | This parameter controls what happens to traffic that is accepted by a felix policy chain. The default will immediately ACCEPT the traffic. Use RETURN to punt the traffic back up to the system chains for further processing.  |
 | IptablesMarkMask                        | FELIX_IPTABLESMARKMASK                  | 0xff000000                           | Mask that Felix selects its IPTables Mark bits from. Should be a 32 bit hexadecimal number with at least 8 bits set, none of which clash with any other mark bits in use on the system.  |
 | IptablesRefreshInterval                 | FELIX_IPTABLESREFRESHINTERVAL           | 60                                   | Period, in seconds, at which felix re-applies all iptables state to ensure that no other process has accidentally broken Calico's rules. Set to 0 to disable iptables refresh.  |
 | ChainInsertMode                         | FELIX_CHAININSERTMODE                   | insert                               | One of "insert" or "append".  Controls whether Felix hooks the kernel's top-level iptables chains by inserting a rule at the top of the chain or by appending a rule at the bottom.  "insert" is the safe default since it prevents Calico's rules from being bypassed.  If you switch to "append" mode, be sure that the other rules in the chains signal acceptance by falling through to the Calico rules, otherwise the Calico policy will be bypassed.  |
@@ -106,22 +108,15 @@ OpenStack plugin in certain error cases). However, in a Docker
 environment the use of environment variables or etcd is often more
 convenient.
 
-### etcd configuration
+### Datastore
 
-> **NOTE**
->
-> etcd configuration cannot be used to set either EtcdAddr or
->
-> :   FelixHostname, both of which are required before the etcd
->     configuration can be read.
->
+Felix also reads configuration parameters from the datastore.  It supports
+a global setting and a per-host override.  Datastore-based configuration
+can be set using the `--raw=felix` option of the calicoctl tool.  For example,
+to set a per-host override for "myhost" to move the log file to /tmp/felix.log:
 
-when using the etcd datastore driver, etcd configuration is read from
-etcd from two places.
+    ./calicoctl config set --raw=felix --node=myhost LogFilePath /tmp/felix.log
 
-1.  For a host of FelixHostname value `HOSTNAME` and a parameter named
-    `NAME`, it is read from `/calico/v1/host/HOSTNAME/config/NAME`.
-2.  For a parameter named `NAME`, it is read from
-    `/calico/v1/config/NAME`.
+(For a global setting, omit the `--node=` option.)
 
-Note that the names are case sensitive.
+For more information, see the [calicoctl config documentation](../calicoctl/commands/config).
