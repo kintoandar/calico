@@ -85,12 +85,12 @@ The code is a little roundabout for a few reasons:
               <li><a href="https://projectcalico.org">Home</a></li>
               <li class="active"><a href="https://projectcalico.org/resources"><span>Resources</span></a>
                 <ul>
-                    <li><a href="http://docs.projectcalico.org/latest/getting-started/"><i class="fa fa-tachometer" aria-hidden="true"></i> &nbsp; Getting Started</a></li>
-                    <li><a href="http://docs.projectcalico.org"><i class="fa fa-book" aria-hidden="true"></i> &nbsp; Documentation</a></li>
+                    <li><a href="{{site.baseurl}}/latest/getting-started/"><i class="fa fa-tachometer" aria-hidden="true"></i> &nbsp; Getting Started</a></li>
+                    <li><a href="{{site.baseurl}}"><i class="fa fa-book" aria-hidden="true"></i> &nbsp; Documentation</a></li>
                     <!--<li><a href="https://www.projectcalico.org/tutorials"><i class="fa fa-file-code-o" aria-hidden="true"></i> &nbsp; Tutorials &amp; Examples</a></li>
                     <li><a href=""><i class="fa fa-paper-plane-o" aria-hidden="true"></i> &nbsp; Online Workshops</a></li>-->
                     <li><a href="https://www.projectcalico.org/videos"><i class="fa fa-video-camera" aria-hidden="true"></i> &nbsp; Videos &amp; Webinars</a></li>
-                    <li><a href="http://docs.projectcalico.org/latest/releases/"><i class="fa fa-clock-o" aria-hidden="true"></i> &nbsp; Releases</a></li>
+                    <li><a href="{{site.baseurl}}/latest/releases/"><i class="fa fa-clock-o" aria-hidden="true"></i> &nbsp; Releases</a></li>
                     <!-- <li><a href="/mvp"><i class="fa fa-star" aria-hidden="true"></i> &nbsp; MVP Program</a></li> -->
                     <li><a href="https://www.projectcalico.org/blog"><i class="fa fa-bookmark" aria-hidden="true"></i> &nbsp; Blog</a></li>
                 </ul>
@@ -197,9 +197,9 @@ The code is a little roundabout for a few reasons:
 				{% for crumb in crumbs offset: 1 %}
 				  {% if forloop.last %}
 					{% comment %}/ {{ crumb | replace:'-',' ' | remove:'.html' | capitalize }}{% endcomment %}
-					<a href="/{{crumbs_version}}{% assign crumb_limit = forloop.index | plus: 1 %}{% for crumb in crumbs limit: crumb_limit %}{{ crumb | append: '/' }}{% endfor %}">{{ crumb | replace:'-',' ' | remove:'.html' | capitalize }}</a>
+					<a href="{{site.baseurl}}/{{crumbs_version}}{% assign crumb_limit = forloop.index | plus: 1 %}{% for crumb in crumbs limit: crumb_limit %}{{ crumb | append: '/' }}{% endfor %}">{{ crumb | replace:'-',' ' | remove:'.html' | capitalize }}</a>
 				  {% else %}
-					<a href="/{{crumbs_version}}{% assign crumb_limit = forloop.index | plus: 1 %}{% for crumb in crumbs limit: crumb_limit %}{{ crumb | append: '/' }}{% endfor %}">{{ crumb | replace:'-',' ' | remove:'.html' | capitalize }}</a> <span style="color: #999;">/</span>
+					<a href="{{site.baseurl}}/{{crumbs_version}}{% assign crumb_limit = forloop.index | plus: 1 %}{% for crumb in crumbs limit: crumb_limit %}{{ crumb | append: '/' }}{% endfor %}">{{ crumb | replace:'-',' ' | remove:'.html' | capitalize }}</a> <span style="color: #999;">/</span>
 				  {% endif %}
 				{% endfor %}
               <!-- END BREADCRUMBS -->
