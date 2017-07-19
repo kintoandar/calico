@@ -196,7 +196,7 @@ The code is a little roundabout for a few reasons:
               <ol class="breadcrumb">
               <!-- START BREADCRUMBS -->
 				{% assign crumbs = page.url | remove:'/index.html' | split: '/' | shift | pop %}
-				{% if crumbs[1] != 'usage' %}
+				{% if crumbs[1] != 'usage' and crumbs.first == 'v2.3' %}
 					{% assign crumbs_version = page.url | split: '/' | first %}
 					{% for crumb in crumbs offset: 1 %}
 					  {% capture crumb_url %}{{crumbs_version}}{% assign crumb_limit = forloop.index | plus: 1 %}{% for crumb in crumbs limit: crumb_limit %}{{ crumb | append: '/' }}{% endfor %}{% endcapture %}
