@@ -193,17 +193,30 @@ The code is a little roundabout for a few reasons:
             <div id="content-main">
               <!-- TOP DOCUMENTATION PAGE NAVBAR -->
               <div style="text-align: left; padding: 18px 0 9px 0; min-width: 500px; overflow-x: hidden;">
+              <ol class="breadcrumb">
               <!-- START BREADCRUMBS -->
 				{% assign crumbs = page.url | remove:'/index.html' | split: '/' | shift | pop %}
 				{% assign crumbs_version = page.url | split: '/' | first %}
 				{% for crumb in crumbs offset: 1 %}
-				  {% if forloop.last %}
-					{% comment %}/ {{ crumb | replace:'-',' ' | remove:'.html' | capitalize }}{% endcomment %}
-					<a href="{{site.baseurl}}/{{crumbs_version}}{% assign crumb_limit = forloop.index | plus: 1 %}{% for crumb in crumbs limit: crumb_limit %}{{ crumb | append: '/' }}{% endfor %}">{{ crumb | replace:'-',' ' | remove:'.html' | capitalize }}</a>
-				  {% else %}
-					<a href="{{site.baseurl}}/{{crumbs_version}}{% assign crumb_limit = forloop.index | plus: 1 %}{% for crumb in crumbs limit: crumb_limit %}{{ crumb | append: '/' }}{% endfor %}">{{ crumb | replace:'-',' ' | remove:'.html' | capitalize }}</a> <span style="color: #999;">/</span>
+			  	  {% capture crumb_url %}{{crumbs_version}}{% assign crumb_limit = forloop.index | plus: 1 %}{% for crumb in crumbs limit: crumb_limit %}{{ crumb | append: '/' }}{% endfor %}{% endcapture %}
+			  	  
+			  	  {% assign crumb_url_md = crumb_url | append: 'index.md' %}
+			  	  {% assign crumb_url_html = crumb_url | append: 'index.html' %}
+		
+		  	  	  {% assign breadcrumb_exists = false %}		  	  
+			  	  {% for static_file in site.html_pages %}
+					{% if static_file.path == crumb_url_md %}
+						{% assign breadcrumb_exists = true %}
+					{% elsif static_file.path == crumb_url_html %}
+						{% assign breadcrumb_exists = true %}
+					{% endif %}
+				  {% endfor %}
+
+				  {% if breadcrumb_exists %}
+					<li class="breadcrumb-item"><a href="{{site.baseurl}}/{{crumb_url}}">{{ crumb | replace:'-',' ' | remove:'.html' | capitalize }}</a></li>
 				  {% endif %}
 				{% endfor %}
+			  </ol>
               <!-- END BREADCRUMBS -->
               
               <a href="https://github.com/projectcalico/calico/tree/master/{{page.path}}" style="color: #999; text-decoration: none; float: right;" target="_blank"><i class="fa fa-github" aria-hidden="true"></i> Edit</a></div>
@@ -213,7 +226,7 @@ The code is a little roundabout for a few reasons:
               {{ content }}
               
               <!-- BOTTOM DOCUMENTATION PAGE NAVBAR -->
-              <div style="margin-top: 60px; padding-top: 20px; border-top: 1px solid #999; text-align: left; color: #999;">Rate this Page: <div class="rw-ui-container" style="margin-top: -3px;"></div> <a href="https://www.projectcalico.org/contact?type=docs&file={{page.path}}" style="margin-left: 30px; color: #999; text-decoration: none;" target="_blank"><i class="fa fa-envelope" aria-hidden="true"></i> Provide Feedback</a> <a href="https://www.projectcalico.org/community#slack" style="margin-left: 30px; color: #999; text-decoration: none;" target="_blank"><i class="fa fa-slack" aria-hidden="true"></i> Get Help via Slack</a> <a href="https://www.projectcalico.org/mvp" style="margin-left: 30px; color: #999; text-decoration: none;" target="_blank"><i class="fa fa-trophy" aria-hidden="true"></i> Ask our MVPs</a></div>
+              <div style="margin-top: 60px; margin-bottom: 40px; padding-top: 20px; border-top: 1px solid #999; text-align: left; color: #999;">Rate this Page: <div class="rw-ui-container" style="margin-top: -3px;"></div> <a href="https://www.projectcalico.org/contact?type=docs&file={{page.path}}" style="margin-left: 30px; color: #999; text-decoration: none;" target="_blank"><i class="fa fa-envelope" aria-hidden="true"></i> Provide Feedback</a> <a href="https://www.projectcalico.org/community#slack" style="margin-left: 30px; color: #999; text-decoration: none;" target="_blank"><i class="fa fa-slack" aria-hidden="true"></i> Get Help via Slack</a> <a href="https://www.projectcalico.org/mvp" style="margin-left: 30px; color: #999; text-decoration: none;" target="_blank"><i class="fa fa-trophy" aria-hidden="true"></i> Ask our MVPs</a></div>
               <!-- END BOTTOM DOCUMENTATION PAGE NAVBAR -->
             </div>
           </div>

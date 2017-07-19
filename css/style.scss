@@ -70,7 +70,18 @@ input.gsc-input, .gsc-input-box, .gsc-input-box-hover, .gsc-input-box-focus, .gs
     }
 }
 
+// BREADCRUMBS
+.breadcrumb {
+	display: inline-block;
+	background: none;
+	border: none;
+	margin: 0;
+	padding: 0;
+}
 
+.breadcrumb li:only-child {
+	display: none;
+}
 
 // Submenu Navigation for Desktop
 #tigera-navbar ul.nav li ul {
