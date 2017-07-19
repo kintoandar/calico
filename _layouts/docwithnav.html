@@ -196,28 +196,23 @@ The code is a little roundabout for a few reasons:
               <ol class="breadcrumb">
               <!-- START BREADCRUMBS -->
 				{% assign crumbs = page.url | remove:'/index.html' | split: '/' | shift | pop %}
-				{% if crumbs[1] != 'usage' and crumbs.first == 'v2.3' %}
+				{% if crumbs.first == 'v2.3' and crumbs[1] != 'usage' %}
 					{% assign crumbs_version = page.url | split: '/' | first %}
 					{% for crumb in crumbs offset: 1 %}
 					  {% capture crumb_url %}{{crumbs_version}}{% assign crumb_limit = forloop.index | plus: 1 %}{% for crumb in crumbs limit: crumb_limit %}{{ crumb | append: '/' }}{% endfor %}{% endcapture %}
 
 					  {% assign crumb_url_md = crumb_url | append: 'index.md' %}
 					  {% assign crumb_url_html = crumb_url | append: 'index.html' %}
-					  {% assign breadcrumb_exists = false %}
+					  {% assign breadcrumb_exists = site.html_pages | where: "path", crumb_url_md %}
+					  {% if breadcrumb_exists == '' or breadcrumb_exists == nil or breadcrumb_exists.size == 0 %}
+					 	{% assign breadcrumb_exists = site.html_pages | where: "path", crumb_url_html %}
+					  {% endif %}
 
-					  {% for static_file in site.html_pages %}
-						{% if static_file.path == crumb_url_md %}
-							{% assign breadcrumb_exists = true %}
-						{% elsif static_file.path == crumb_url_html %}
-							{% assign breadcrumb_exists = true %}
-						{% endif %}
-					  {% endfor %}
-
-					  {% if breadcrumb_exists %}
+					  {% if breadcrumb_exists != '' and breadcrumb_exists != nil and breadcrumb_exists.size > 0 %}
 						<li class="breadcrumb-item"><a href="{{site.baseurl}}/{{crumb_url}}">{{ crumb | replace:'-',' ' | remove:'.html' | capitalize }}</a></li>
 					  {% endif %}
 					{% endfor %}
-				{% endif %}
+				 {% endif %}
 			  </ol>
               <!-- END BREADCRUMBS -->
               
@@ -228,7 +223,7 @@ The code is a little roundabout for a few reasons:
               {{ content }}
               
               <!-- BOTTOM DOCUMENTATION PAGE NAVBAR -->
-              <div style="margin-top: 60px; margin-bottom: 40px; padding-top: 20px; border-top: 1px solid #999; text-align: left; color: #999;">Rate this Page: <div class="rw-ui-container" style="margin-top: -3px;"></div> <a href="https://www.projectcalico.org/contact?type=docs&file={{page.path}}" style="margin-left: 30px; color: #999; text-decoration: none;" target="_blank"><i class="fa fa-envelope" aria-hidden="true"></i> Provide Feedback</a> <a href="https://www.projectcalico.org/community#slack" style="margin-left: 30px; color: #999; text-decoration: none;" target="_blank"><i class="fa fa-slack" aria-hidden="true"></i> Get Help via Slack</a> <a href="https://www.projectcalico.org/mvp" style="margin-left: 30px; color: #999; text-decoration: none;" target="_blank"><i class="fa fa-trophy" aria-hidden="true"></i> Ask our MVPs</a></div>
+              <div style="margin-top: 60px; margin-bottom: 40px; padding-top: 20px; border-top: 1px solid #999; text-align: left; color: #999;">Rate this Page: <div class="rw-ui-container" style="margin-top: -5px;"></div> <a href="https://www.projectcalico.org/contact?type=docs&file={{page.path}}" style="margin-left: 30px; color: #999; text-decoration: none;" target="_blank"><i class="fa fa-envelope" aria-hidden="true"></i> Provide Feedback</a> <a href="https://www.projectcalico.org/community#slack" style="margin-left: 30px; color: #999; text-decoration: none;" target="_blank"><i class="fa fa-slack" aria-hidden="true"></i> Get Help via Slack</a> <a href="https://www.projectcalico.org/mvp" style="margin-left: 30px; color: #999; text-decoration: none;" target="_blank"><i class="fa fa-trophy" aria-hidden="true"></i> Ask our MVPs</a></div>
               <!-- END BOTTOM DOCUMENTATION PAGE NAVBAR -->
             </div>
           </div>
