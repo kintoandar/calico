@@ -196,26 +196,28 @@ The code is a little roundabout for a few reasons:
               <ol class="breadcrumb">
               <!-- START BREADCRUMBS -->
 				{% assign crumbs = page.url | remove:'/index.html' | split: '/' | shift | pop %}
-				{% assign crumbs_version = page.url | split: '/' | first %}
-				{% for crumb in crumbs offset: 1 %}
-			  	  {% capture crumb_url %}{{crumbs_version}}{% assign crumb_limit = forloop.index | plus: 1 %}{% for crumb in crumbs limit: crumb_limit %}{{ crumb | append: '/' }}{% endfor %}{% endcapture %}
-			  	  
-			  	  {% assign crumb_url_md = crumb_url | append: 'index.md' %}
-			  	  {% assign crumb_url_html = crumb_url | append: 'index.html' %}
-		
-		  	  	  {% assign breadcrumb_exists = false %}		  	  
-			  	  {% for static_file in site.html_pages %}
-					{% if static_file.path == crumb_url_md %}
-						{% assign breadcrumb_exists = true %}
-					{% elsif static_file.path == crumb_url_html %}
-						{% assign breadcrumb_exists = true %}
-					{% endif %}
-				  {% endfor %}
+				{% if crumbs[1] != 'usage' %}
+					{% assign crumbs_version = page.url | split: '/' | first %}
+					{% for crumb in crumbs offset: 1 %}
+					  {% capture crumb_url %}{{crumbs_version}}{% assign crumb_limit = forloop.index | plus: 1 %}{% for crumb in crumbs limit: crumb_limit %}{{ crumb | append: '/' }}{% endfor %}{% endcapture %}
 
-				  {% if breadcrumb_exists %}
-					<li class="breadcrumb-item"><a href="{{site.baseurl}}/{{crumb_url}}">{{ crumb | replace:'-',' ' | remove:'.html' | capitalize }}</a></li>
-				  {% endif %}
-				{% endfor %}
+					  {% assign crumb_url_md = crumb_url | append: 'index.md' %}
+					  {% assign crumb_url_html = crumb_url | append: 'index.html' %}
+					  {% assign breadcrumb_exists = false %}
+
+					  {% for static_file in site.html_pages %}
+						{% if static_file.path == crumb_url_md %}
+							{% assign breadcrumb_exists = true %}
+						{% elsif static_file.path == crumb_url_html %}
+							{% assign breadcrumb_exists = true %}
+						{% endif %}
+					  {% endfor %}
+
+					  {% if breadcrumb_exists %}
+						<li class="breadcrumb-item"><a href="{{site.baseurl}}/{{crumb_url}}">{{ crumb | replace:'-',' ' | remove:'.html' | capitalize }}</a></li>
+					  {% endif %}
+					{% endfor %}
+				{% endif %}
 			  </ol>
               <!-- END BREADCRUMBS -->
               
